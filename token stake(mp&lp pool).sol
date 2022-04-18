@@ -100,11 +100,15 @@ contract TokenStake is Member {
     function getReward() public {
         uint256 reward = settleRewards(msg.sender);
         uint256 payReward = reward.add(userInfo[msg.sender].pendingReward);
-        IERC20(mp).transfer(msg.sender, payReward);
-        userInfo[msg.sender].receivedReward = userInfo[msg.sender].receivedReward.add(payReward);
-        userInfo[msg.sender].pendingReward = 0;
-        userInfo[msg.sender].lastRewardRound = round;
-        emit GetReward(msg.sender, reward);
+        if (IERC20(mp).balanceOf(address(this) > payReward)) {
+            IERC20(mp).transfer(msg.sender, payReward);
+            userInfo[msg.sender].receivedReward = userInfo[msg.sender].receivedReward.add(payReward);
+            userInfo[msg.sender].pendingReward = 0;
+            userInfo[msg.sender].lastRewardRound = round;
+            emit GetReward(msg.sender, reward);
+        } else {
+            claimReward(msg.sender);
+        }
     }
 
     function timeLockChange(uint256 _period) public {
