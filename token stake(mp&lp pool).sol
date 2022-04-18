@@ -70,7 +70,7 @@ contract TokenStake is Member {
     }
     
     function update(uint256 amount) external validSender {
-        if(block.timestamp >= roundTime[round] + 24 minutes) {
+        if(block.timestamp >= roundTime[round] + 24 hours) {
             round++;
             roundTime[round] = block.timestamp;
             daliyInfo[round].daliyDividends = 0;
@@ -110,7 +110,8 @@ contract TokenStake is Member {
         uint256 reward = settleRewards(msg.sender);
         uint256 payReward = reward.add(userInfo[msg.sender].pendingReward);
         // Checks
-        if (IERC20(mp).balanceOf(address(this) > payReward)) {
+        uint256 balance = IERC20(mp).balanceOf(address(this));
+        if (balance > payReward)) {
 
             // Effects
             userInfo[msg.sender].receivedReward = userInfo[msg.sender].receivedReward.add(payReward);
@@ -118,7 +119,12 @@ contract TokenStake is Member {
             userInfo[msg.sender].lastRewardRound = round;
 
             // Interaction
-            IERC20(mp).transfer(msg.sender, payReward);
+            // IERC20(mp).transfer(msg.sender, payReward);
+            if(balance < payReward) {
+                IERC20(mp).transfer(msg.sender, balance);
+            } else{
+                IERC20(mp).transfer(msg.sender, payReward);
+            }
             emit GetReward(msg.sender, reward);
         } else {
 
