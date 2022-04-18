@@ -6,6 +6,8 @@ import "./ContractOwner.sol";
 import "./Manager.sol";
 
 abstract contract Member is ContractOwner {
+    event SetManager(address member);
+
     modifier CheckPermit(string memory permit) {
         require(manager.userPermits(msg.sender, permit),
             "no permit");
@@ -16,5 +18,6 @@ abstract contract Member is ContractOwner {
     
     function setManager(address addr) external ContractOwnerOnly {
         manager = Manager(addr);
+        emit SetManager(addr);
     }
 }
