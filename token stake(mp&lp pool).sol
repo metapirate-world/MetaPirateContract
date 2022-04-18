@@ -111,7 +111,7 @@ contract TokenStake is Member {
         uint256 payReward = reward.add(userInfo[msg.sender].pendingReward);
         // Checks
         uint256 balance = IERC20(mp).balanceOf(address(this));
-        if (balance > payReward)) {
+        if (balance > payReward) {
 
             // Effects
             userInfo[msg.sender].receivedReward = userInfo[msg.sender].receivedReward.add(payReward);
