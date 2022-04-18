@@ -126,11 +126,6 @@ contract TokenStake is Member {
             claimReward(msg.sender);
         }
     }
-
-    function timeLockChange(uint256 _period) public {
-        require(msg.sender == manager.members("owner"), "onlyOwner");
-        timeLock = _period;
-    }
     
     function withdraw() public {
         // Checks
