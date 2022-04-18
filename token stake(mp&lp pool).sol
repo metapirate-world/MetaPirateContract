@@ -86,7 +86,7 @@ contract TokenStake is Member {
         totalRewards = totalRewards.add(amount);
     }
     
-    function deposit(uint256 amount) public {
+    function deposit(uint256 amount) external {
         // Checks
         require(lockRequest[msg.sender] == 0, "is in pending");
         require(amount > 0, "amount not big than 0");
@@ -127,7 +127,7 @@ contract TokenStake is Member {
         }
     }
     
-    function withdraw() public {
+    function withdraw() external {
         // Checks
         require(lockRequest[msg.sender] !=0 && block.timestamp >= lockRequest[msg.sender].add(timeLock), "locked");
         uint256 pendingWithdraw = userInfo[msg.sender].pendingWithdraw;
@@ -146,7 +146,7 @@ contract TokenStake is Member {
         emit Withdraw(msg.sender, pendingWithdraw);
     }
 
-    function withdrawRequest() public {
+    function withdrawRequest() external {
         require(lockRequest[msg.sender] == 0, "is in pending");
         getReward();
 

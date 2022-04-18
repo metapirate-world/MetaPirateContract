@@ -23,11 +23,11 @@ contract Token is ERC20, Ownable, Member {
         _mint(msg.sender, _totalSupply);
     }
   
-    function issue(uint256 amount) public onlyOwner {
+    function issue(uint256 amount) external onlyOwner {
         _mint(msg.sender, amount);
     }
     
-    function burn(uint256 amount) public {
+    function burn(uint256 amount) external {
         _burn(msg.sender, amount);
     }
 
