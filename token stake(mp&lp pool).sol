@@ -43,7 +43,7 @@ contract TokenStake is Member {
     event Deposit(address _user, uint256 _amount);
     
     modifier validSender{
-        require(msg.sender == manager.members("mpToken") || msg.sender == address(manager.members("nftMasterChef")) || msg.sender == manager.members("nft") || msg.sender == manager.members("updatecard") || msg.sender == manager.members("owner"));
+        require(msg.sender == manager.members("mpToken") || msg.sender == address(manager.members("nftMasterChef")) || msg.sender == manager.members("nft") || msg.sender == manager.members("updatecard") || msg.sender == manager.members("owner"), "error validSender");
         _;
     }
     
@@ -89,7 +89,7 @@ contract TokenStake is Member {
     function deposit(uint256 amount) public {
         // Checks
         require(lockRequest[msg.sender] == 0, "is in pending");
-        require(amount > 0);
+        require(amount > 0, "amount not big than 0");
 
         // Effects
         claimReward(msg.sender);
