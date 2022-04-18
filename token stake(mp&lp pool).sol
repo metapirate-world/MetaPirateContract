@@ -48,6 +48,9 @@ contract TokenStake is Member {
     }
     
     constructor(IERC20 _mp, IERC20 _stakeToken) {
+        require(address(_mp) != address(0), "_mp can not be 0 address");
+        require(address(_stakeToken) != address(0), "_stakeToken can not be 0 address");
+        require(address(_mp) != address(_stakeToken), "_stakeToken and _mp should not be the same token");
         mp = _mp;
         stakeToken = _stakeToken;
         // init();
