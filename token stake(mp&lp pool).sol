@@ -84,9 +84,11 @@ contract TokenStake is Member {
     }
     
     function deposit(uint256 amount) public {
+        // Checks
         require(lockRequest[msg.sender] == 0, "is in pending");
         require(amount > 0);
-        IERC20(stakeToken).transferFrom(msg.sender, address(this), amount);
+
+        // Effects
         claimReward(msg.sender);
         if(userInfo[msg.sender].depositedToken == 0) {
             totalStakers++;
@@ -94,19 +96,30 @@ contract TokenStake is Member {
         userInfo[msg.sender].depositedToken = userInfo[msg.sender].depositedToken.add(amount);
         totalDepositedAmount = totalDepositedAmount.add(amount);
         daliyInfo[round].totalDeposited = daliyInfo[round].totalDeposited.add(amount);
+
+        // Interaction
+        IERC20(stakeToken).transferFrom(msg.sender, address(this), amount);
+
         emit Deposit(msg.sender, amount);
     }
 
     function getReward() public {
         uint256 reward = settleRewards(msg.sender);
         uint256 payReward = reward.add(userInfo[msg.sender].pendingReward);
+        // Checks
         if (IERC20(mp).balanceOf(address(this) > payReward)) {
-            IERC20(mp).transfer(msg.sender, payReward);
+
+            // Effects
             userInfo[msg.sender].receivedReward = userInfo[msg.sender].receivedReward.add(payReward);
             userInfo[msg.sender].pendingReward = 0;
             userInfo[msg.sender].lastRewardRound = round;
+
+            // Interaction
+            IERC20(mp).transfer(msg.sender, payReward);
             emit GetReward(msg.sender, reward);
         } else {
+
+            // Effects
             claimReward(msg.sender);
         }
     }
@@ -117,15 +130,21 @@ contract TokenStake is Member {
     }
     
     function withdraw() public {
+        // Checks
         require(lockRequest[msg.sender] !=0 && block.timestamp >= lockRequest[msg.sender].add(timeLock), "locked");
         uint256 pendingWithdraw = userInfo[msg.sender].pendingWithdraw;
+        require(pendingWithdraw > 0, "no pendingWithdraw");
         uint256 fee = pendingWithdraw.mul(2).div(100);
-        IERC20(stakeToken).transfer(msg.sender, pendingWithdraw.sub(fee));
-        IERC20(stakeToken).transfer(address(manager.members("OfficalAddress")), fee);
         
+        // Effects
         lockRequest[msg.sender] = 0;
         totalDepositedAmount = totalDepositedAmount.sub(pendingWithdraw);
         userInfo[msg.sender].pendingWithdraw = 0;
+
+        // Interaction
+        IERC20(stakeToken).transfer(msg.sender, pendingWithdraw.sub(fee));
+        IERC20(stakeToken).transfer(address(manager.members("OfficalAddress")), fee);
+
         emit Withdraw(msg.sender, pendingWithdraw);
     }
 
