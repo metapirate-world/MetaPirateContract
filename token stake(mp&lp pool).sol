@@ -43,7 +43,7 @@ contract TokenStake is Member {
     event Deposit(address _user, uint256 _amount);
     
     modifier validSender{
-        require(msg.sender == manager.members("mpToken") || msg.sender == address(manager.members("nftMasterChef")) || msg.sender == manager.members("nft") || msg.sender == manager.members("updatecard") || msg.sender == manager.members("owner"), "error validSender");
+        require(msg.sender == manager.members("mpToken") || msg.sender == address(manager.members("nftMasterChef")) || msg.sender == manager.members("nft") || msg.sender == manager.members("updatecard"), "error validSender");
         _;
     }
     
