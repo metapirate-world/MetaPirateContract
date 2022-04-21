@@ -123,12 +123,8 @@ contract TokenStake is Member {
             userInfo[msg.sender].pendingReward = 0;
 
             // Interaction
-            // IERC20(mp).transfer(msg.sender, payReward);
-            if(balance < payReward) {
-                IERC20(mp).transfer(msg.sender, balance);
-            } else{
-                IERC20(mp).transfer(msg.sender, payReward);
-            }
+            IERC20(mp).transfer(msg.sender, payReward);
+            
             emit GetReward(msg.sender, reward);
         }
     }
