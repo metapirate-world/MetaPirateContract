@@ -117,7 +117,7 @@ contract TokenStake is Member {
             balance = balance.sub(totalDepositedAmount);
         }
         
-        if (balance > payReward) {
+        if (balance >= payReward) {
             // Effects
             userInfo[msg.sender].receivedReward = userInfo[msg.sender].receivedReward.add(payReward);
             userInfo[msg.sender].pendingReward = 0;
