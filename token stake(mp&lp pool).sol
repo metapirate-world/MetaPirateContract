@@ -106,16 +106,21 @@ contract TokenStake is Member {
     }
 
     function getReward() public {
-        uint256 reward = settleRewards(msg.sender);
-        uint256 payReward = reward.add(userInfo[msg.sender].pendingReward);
+        claimReward(msg.sender);
+        uint256 payReward = userInfo[msg.sender].pendingReward;
+        
         // Checks
         uint256 balance = IERC20(mp).balanceOf(address(this));
-        if (balance > payReward) {
 
+        // check if (stakeToken = mp), contract balance need sub stakeTotalToken
+        if (address(stakeToken) == address(mp)) {
+            balance = balance.sub(totalDepositedAmount);
+        }
+        
+        if (balance > payReward) {
             // Effects
             userInfo[msg.sender].receivedReward = userInfo[msg.sender].receivedReward.add(payReward);
             userInfo[msg.sender].pendingReward = 0;
-            userInfo[msg.sender].lastRewardRound = round;
 
             // Interaction
             // IERC20(mp).transfer(msg.sender, payReward);
@@ -125,10 +130,6 @@ contract TokenStake is Member {
                 IERC20(mp).transfer(msg.sender, payReward);
             }
             emit GetReward(msg.sender, reward);
-        } else {
-
-            // Effects
-            claimReward(msg.sender);
         }
     }
     
